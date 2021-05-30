@@ -1,3 +1,11 @@
+/*
+ * @Author: luffyZh
+ * @Date: 2021-04-12 11:45:55
+ * @LastEditTime: 2021-05-30 17:07:04
+ * @LastEditors: Please set LastEditors
+ * @Description: 是否是刘海屏，刘海屏应该做单独处理
+ * @FilePath: /useful-kit/is-iphonex/is-iphonex.ts
+ */
 // Web版本
 function isSkeletonIphoneX() {
   // iPhone X、iPhone XS
@@ -13,5 +21,6 @@ function isSkeletonIphoneX() {
 // 小程序版
 export function isIphoneX() {
   // iphoneX 及以上的异形屏top为 44，非异形屏为 20
+  // @ts-ignore
   return wx.getSystemInfoSync().safeArea && wx.getSystemInfoSync().safeArea.top > 20;
 }
