@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>可拖拽挂件</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    .draggable {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: gold;
+      width: 40px;
+      height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <div class="draggable"></div>
+  <script src="./dragable.ts"></script>
+  <script>
+    window.onload = function() {
+      const dragDom = document.querySelector('.draggable');
+      draggable(dragDom);
+    }
+  </script>
+</body>
+</html>
