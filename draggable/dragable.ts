@@ -14,6 +14,9 @@ const isAndroid = / Android /.test(navigator.userAgent);
  * @param adsorb { x = 20, y = 80 } 上下左右吸附的边距
  */
 function draggable($ele, adsorb = { x: 20, y: 80 }) {
+  if (!$ele) {
+    throw new Error('必须是可拖拽元素');
+  }
   // 开始时候的位置
   let startX = 0;
   let startY = 0;
