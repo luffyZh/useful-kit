@@ -233,7 +233,6 @@ export default class PullRefresh {
       (window as any).__pull_refresh_enabled = flag;
     }
     this.setEnabled(true);
-    // 初始化处理页面样式和结构，new Class 的过程中就可以完成
     this.initRefreshStyle();
     this.initRefreshContainer();
     this.initTouchStart();
