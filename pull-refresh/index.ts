@@ -1,6 +1,5 @@
 interface IPullRefreshConfig {
   $_ele?: HTMLElement;
-  enabled?: boolean;
   refreshListener?: () => void;
   refreshStyleConfig?: Record<string, string>;
 }
@@ -32,9 +31,6 @@ export default class PullRefresh {
   // 下拉刷新的那个容器
   $_ele: HTMLElement;
 
-  // 下拉刷新是否可用
-  enabled: boolean = (window as any).__pull_refresh_enabled || false;
-
   // 刷新函数
   refreshListener: () => void;
 
@@ -61,13 +57,11 @@ export default class PullRefresh {
   refreshStyleConfig: any = __default_refresh_style_config;
 
   setEnabled(flag: boolean) {
-    this.enabled = flag;
     (window as any)._setPullRefreshEnabled(flag);
   }
 
   setRefreshListener(fn: any) {
     this.refreshListener = fn;
-    console.log(this, 999999)
   }
 
   setLoading(flag: boolean) {
@@ -88,7 +82,7 @@ export default class PullRefresh {
     const _self = this;
     _self.$_ele.addEventListener('touchstart', function(e) {
       // 如果下拉刷新被禁用，那么直接返回
-      if (!_self.enabled) return;
+      if (!(window as any).__pull_refresh_enabled) return;
       Object.assign(_self.position, {
         scroll_on_top: _self.checkScrollIsOnTop(),
         start_x: e.touches[0].pageX,
@@ -101,11 +95,12 @@ export default class PullRefresh {
   initTouchMove() {
     const _self = this;
     _self.$_ele.addEventListener('touchmove', function(e) {
+      // 禁用刷新
+      if (!(window as any).__pull_refresh_enabled) return;
       // 存储移动过程中的偏移
       const { start_x, start_y, scroll_on_top } = _self.position;
       const offsetY = e.touches[0].pageY - start_y;
       const offsetX = e.touches[0].pageX - start_x;
-      console.log(_self.position);
       // 方向向下才是刷新
       if (offsetY > 150 && offsetY > Math.abs(offsetX)) {
         _self.position.direction = EPullDirection.down
@@ -115,7 +110,6 @@ export default class PullRefresh {
         _self.position.direction = EPullDirection.unkonw
       }
       if (
-        !_self.enabled || // 如果被禁用了，直接返回
         _self.loading || // 如果在 loading 过程中，直接返回
         !scroll_on_top || // 如果不是在最顶部下拉的，直接返回
         _self.position.direction !== EPullDirection.down // 方向不是向下，直接返回
@@ -134,7 +128,8 @@ export default class PullRefresh {
   initTouchEnd() {
     const _self = this;
     _self.$_ele.addEventListener('touchend', function() {
-      if (!_self.enabled) return;
+      // 禁用刷新
+      if (!(window as any).__pull_refresh_enabled) return;
       const { scroll_on_top, direction } = _self.position;
       // 没在顶部或者没有触发 loading，end 不做任何操作
       if (!scroll_on_top || direction !== EPullDirection.down || !_self.loading) return;
@@ -233,6 +228,7 @@ export default class PullRefresh {
       (window as any).__pull_refresh_enabled = flag;
     }
     this.setEnabled(true);
+    // 初始化处理页面样式和结构，new Class 的过程中就可以完成
     this.initRefreshStyle();
     this.initRefreshContainer();
     this.initTouchStart();
